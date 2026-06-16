@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Data Structures — ScholarNest</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0F1B2D;
+  --navy2: #162236;
+  --indigo: #5B6EF5;
+  --indigo-light: #7B8BF7;
+  --mint: #2ECDA7;
+  --amber: #F5A623;
+  --rose: #F55B7A;
+  --slate: #E8EDF5;
+  --slate2: #C5D0E0;
+  --text: #E8EDF5;
+  --text-dim: #8A9BBC;
+  --card: #1A2A40;
+  --card2: #1E3050;
+  --border: #243550;
+  --code-bg: #0A1220;
+  --list-color: #5B6EF5;
+  --tuple-color: #2ECDA7;
+  --dict-color: #F5A623;
+  --r: 8px;
+  --r2: 14px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--navy);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(15,27,45,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  display: flex; align-items: center; gap: 8px;
+  height: 60px;
+}
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; margin-right:auto; }
+.logo-icon {
+  width:36px; height:36px; border-radius:9px;
+  background: linear-gradient(135deg, var(--indigo), var(--mint));
+  display:flex; align-items:center; justify-content:center;
+  font-weight:800; font-size:15px; color:#fff; letter-spacing:-0.5px;
+}
+.logo-text { font-weight:700; font-size:15px; color:var(--text); }
+.logo-sub { font-size:11px; color:var(--text-dim); font-weight:400; }
+
+.nav-btn {
+  padding:6px 14px; border-radius:20px; border:none; cursor:pointer;
+  font-family:'Inter',sans-serif; font-size:13px; font-weight:600;
+  transition: all 0.18s;
+  background:transparent; color:var(--text-dim);
+}
+.nav-btn:hover { color:var(--text); background:var(--card); }
+.nav-btn.active { background:var(--indigo); color:#fff; }
+
+.xp-bar {
+  display:flex; align-items:center; gap:8px;
+  background:var(--card); border-radius:20px; padding:5px 12px;
+  font-size:12px; color:var(--mint); font-weight:700;
+}
+.xp-bar span { color:var(--text-dim); font-weight:400; }
+
+/* ── HERO ── */
+.hero {
+  padding: 56px 24px 40px;
+  text-align:center;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(91,110,245,0.18) 0%, transparent 70%);
+}
+.hero-eyebrow {
+  display:inline-block; padding:4px 14px; border-radius:20px;
+  background:rgba(91,110,245,0.15); border:1px solid rgba(91,110,245,0.3);
+  font-size:12px; font-weight:600; color:var(--indigo-light); letter-spacing:1px;
+  text-transform:uppercase; margin-bottom:18px;
+}
+.hero h1 {
+  font-size:clamp(28px,5vw,52px); font-weight:800; line-height:1.1;
+  letter-spacing:-1.5px; margin-bottom:14px;
+}
+.hero h1 em { font-style:normal; }
+.hero h1 .w-list { color:var(--list-color); }
+.hero h1 .w-tuple { color:var(--tuple-color); }
+.hero h1 .w-dict { color:var(--dict-color); }
+.hero-sub { font-size:16px; color:var(--text-dim); max-width:520px; margin:0 auto 28px; line-height:1.6; }
+.hero-pills { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+.pill {
+  padding:7px 16px; border-radius:20px; font-size:13px; font-weight:600;
+  display:flex; align-items:center; gap:6px;
+}
+.pill-list { background:rgba(91,110,245,0.15); color:var(--indigo-light); border:1px solid rgba(91,110,245,0.3); }
+.pill-tuple { background:rgba(46,205,167,0.12); color:var(--mint); border:1px solid rgba(46,205,167,0.25); }
+.pill-dict { background:rgba(245,166,35,0.12); color:var(--amber); border:1px solid rgba(245,166,35,0.25); }
+
+/* ── TABS ── */
+.tabs-wrap { padding:0 24px 0; max-width:1200px; margin:0 auto; }
+.tabs {
+  display:flex; gap:4px; border-bottom:1px solid var(--border);
+  overflow-x:auto; padding-bottom:0; scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar { display:none; }
+.tab {
+  padding:11px 20px; border:none; background:transparent; cursor:pointer;
+  font-family:'Inter',sans-serif; font-size:13px; font-weight:600;
+  color:var(--text-dim); border-bottom:2px solid transparent;
+  transition:all 0.18s; white-space:nowrap; margin-bottom:-1px;
+}
+.tab:hover { color:var(--text); }
+.tab.active { color:var(--indigo-light); border-bottom-color:var(--indigo); }
+
+/* ── SECTIONS ── */
+.section { display:none; padding:32px 24px 60px; max-width:1200px; margin:0 auto; }
+.section.active { display:block; }
+
+/* ── SECTION HEADER ── */
+.sec-header { margin-bottom:28px; }
+.sec-header h2 { font-size:26px; font-weight:800; letter-spacing:-0.5px; margin-bottom:6px; }
+.sec-header p { color:var(--text-dim); font-size:15px; line-height:1.6; }
+
+/* ── THEORY CARD ── */
+.theory-block {
+  background:var(--card); border-radius:var(--r2); border:1px solid var(--border);
+  padding:24px 28px; margin-bottom:20px;
+}
+.theory-block h3 {
+  font-size:17px; font-weight:700; margin-bottom:12px;
+  display:flex; align-items:center; gap:8px;
+}
+.theory-tag {
+  font-size:11px; padding:2px 8px; border-radius:10px; font-weight:600;
+}
+.theory-block p, .theory-block li {
+  font-size:14px; color:#BCC8DC; line-height:1.75;
+}
+.theory-block ul, .theory-block ol {
+  padding-left:20px; margin-top:8px;
+}
+.theory-block li { margin-bottom:5px; }
+
+/* ── CODE BLOCK ── */
+.code-block {
+  background:var(--code-bg); border-radius:var(--r); border:1px solid var(--border);
+  margin:14px 0; overflow:hidden;
+}
+.code-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:8px 14px; border-bottom:1px solid var(--border);
+  font-size:12px; color:var(--text-dim); font-weight:600;
+}
+.code-dots { display:flex; gap:5px; }
+.code-dot { width:10px; height:10px; border-radius:50%; }
+.d1{background:#ff5f57;} .d2{background:#febc2e;} .d3{background:#28c840;}
+pre {
+  padding:18px 20px; overflow-x:auto; font-family:'JetBrains Mono',monospace;
+  font-size:13px; line-height:1.7; color:#C9D4E8;
+}
+.kw { color:#7B8BF7; }
+.fn { color:#2ECDA7; }
+.str { color:#F5A623; }
+.num { color:#F55B7A; }
+.cm { color:#4A5F7A; font-style:italic; }
+.op { color:#C9D4E8; }
+.out { color:#8A9BBC; }
+
+/* ── OUTPUT BLOCK ── */
+.output-block {
+  background:#080F1A; border-left:3px solid var(--mint);
+  padding:10px 14px; margin:4px 0 0; border-radius:0 0 var(--r) var(--r);
+  font-family:'JetBrains Mono',monospace; font-size:12px; color:#8ECFB5; line-height:1.6;
+}
+
+/* ── GRID ── */
+.grid-2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:18px; }
+.grid-3 { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; }
+
+/* ── FLASH CARDS ── */
+.flashcard-wrap { perspective:1000px; cursor:pointer; }
+.flashcard {
+  background:var(--card); border-radius:var(--r2); border:1px solid var(--border);
+  padding:28px; min-height:180px; display:flex; flex-direction:column;
+  justify-content:center; align-items:center; text-align:center;
+  transition:transform 0.5s; transform-style:preserve-3d; position:relative;
+}
+.flashcard-wrap:hover .flashcard { border-color:var(--indigo); }
+.flashcard.flipped { transform:rotateY(180deg); }
+.card-front, .card-back {
+  position:absolute; width:100%; height:100%;
+  display:flex; flex-direction:column; justify-content:center; align-items:center;
+  padding:24px; backface-visibility:hidden; border-radius:var(--r2);
+}
+.card-back { transform:rotateY(180deg); background:var(--card2); }
+.card-label {
+  font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px;
+  color:var(--text-dim); margin-bottom:12px;
+}
+.card-q { font-size:16px; font-weight:700; line-height:1.4; }
+.card-a { font-size:14px; color:#BCC8DC; line-height:1.6; }
+.card-hint { font-size:11px; color:var(--text-dim); margin-top:10px; }
+
+/* ── QUIZ GAME ── */
+.quiz-wrap {
+  background:var(--card); border-radius:var(--r2); border:1px solid var(--border);
+  padding:28px; max-width:640px; margin:0 auto;
+}
+.quiz-progress {
+  display:flex; align-items:center; gap:12px; margin-bottom:24px;
+}
+.quiz-prog-bar {
+  flex:1; height:6px; background:var(--border); border-radius:3px; overflow:hidden;
+}
+.quiz-prog-fill {
+  height:100%; background:linear-gradient(90deg,var(--indigo),var(--mint));
+  border-radius:3px; transition:width 0.4s;
+}
+.quiz-q-num { font-size:13px; color:var(--text-dim); font-weight:600; }
+.quiz-question {
+  font-size:18px; font-weight:700; margin-bottom:20px; line-height:1.4;
+}
+.quiz-code {
+  background:var(--code-bg); border-radius:var(--r); padding:14px 16px;
+  font-family:'JetBrains Mono',monospace; font-size:13px; color:#C9D4E8;
+  margin-bottom:20px; border:1px solid var(--border); line-height:1.6;
+}
+.quiz-options { display:grid; gap:10px; }
+.quiz-opt {
+  padding:13px 18px; border-radius:var(--r); border:1px solid var(--border);
+  background:var(--navy2); cursor:pointer; font-size:14px; font-weight:500;
+  transition:all 0.18s; text-align:left; color:var(--text);
+  font-family:'Inter',sans-serif;
+}
+.quiz-opt:hover:not(:disabled) { border-color:var(--indigo); background:rgba(91,110,245,0.1); }
+.quiz-opt.correct { border-color:var(--mint); background:rgba(46,205,167,0.15); color:var(--mint); }
+.quiz-opt.wrong { border-color:var(--rose); background:rgba(245,91,122,0.1); color:var(--rose); }
+.quiz-feedback {
+  margin-top:18px; padding:14px; border-radius:var(--r); font-size:14px; line-height:1.5;
+  display:none;
+}
+.quiz-feedback.show { display:block; }
+.quiz-feedback.correct-fb { background:rgba(46,205,167,0.1); border:1px solid rgba(46,205,167,0.25); color:var(--mint); }
+.quiz-feedback.wrong-fb { background:rgba(245,91,122,0.1); border:1px solid rgba(245,91,122,0.25); color:var(--rose); }
+.quiz-next-btn {
+  margin-top:18px; padding:11px 28px; border-radius:var(--r);
+  background:var(--indigo); border:none; color:#fff; cursor:pointer;
+  font-family:'Inter',sans-serif; font-size:14px; font-weight:700;
+  display:none; transition:background 0.18s;
+}
+.quiz-next-btn.show { display:inline-block; }
+.quiz-next-btn:hover { background:var(--indigo-light); }
+.quiz-score {
+  text-align:center; padding:20px 0;
+}
+.quiz-score .score-num { font-size:56px; font-weight:800; color:var(--mint); line-height:1; }
+.quiz-score .score-label { font-size:16px; color:var(--text-dim); margin:8px 0 18px; }
+.quiz-restart {
+  padding:12px 28px; border-radius:var(--r); background:var(--indigo);
+  border:none; color:#fff; font-size:15px; font-weight:700; cursor:pointer;
+  font-family:'Inter',sans-serif;
+}
+
+/* ── MATCH GAME ── */
+.match-game {
+  background:var(--card); border-radius:var(--r2); border:1px solid var(--border); padding:24px;
+}
+.match-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:18px; }
+.match-col h4 { font-size:13px; font-weight:700; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+.match-item {
+  padding:11px 16px; border-radius:var(--r); border:1px solid var(--border);
+  background:var(--navy2); cursor:pointer; font-size:13px; font-weight:600;
+  transition:all 0.18s; text-align:center;
+}
+.match-item:hover { border-color:var(--indigo); }
+.match-item.selected { border-color:var(--indigo); background:rgba(91,110,245,0.15); }
+.match-item.matched { border-color:var(--mint); background:rgba(46,205,167,0.1); color:var(--mint); pointer-events:none; }
+.match-item.wrong-match { border-color:var(--rose); background:rgba(245,91,122,0.08); animation: shake 0.35s; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+.match-status { font-size:14px; color:var(--text-dim); margin-top:16px; }
+.match-reset-btn {
+  margin-top:16px; padding:9px 20px; border-radius:var(--r);
+  background:var(--navy2); border:1px solid var(--border);
+  color:var(--text); font-family:'Inter',sans-serif; font-size:13px; font-weight:600;
+  cursor:pointer; transition:all 0.18s;
+}
+.match-reset-btn:hover { border-color:var(--indigo); }
+
+/* ── FILL BLANK GAME ── */
+.fill-game {
+  background:var(--card); border-radius:var(--r2); border:1px solid var(--border); padding:24px;
+}
+.fill-q {
+  font-family:'JetBrains Mono',monospace; font-size:14px; line-height:2;
+  background:var(--code-bg); padding:16px 18px; border-radius:var(--r);
+  border:1px solid var(--border); margin:16px 0; color:#C9D4E8;
+}
+.fill-input {
+  display:inline-block; width:130px; padding:2px 8px; margin:0 4px;
+  border-bottom:2px solid var(--indigo); background:rgba(91,110,245,0.08);
+  border-radius:4px 4px 0 0; border-top:none; border-left:none; border-right:none;
+  color:var(--indigo-light); font-family:'JetBrains Mono',monospace; font-size:14px;
+  outline:none; text-align:center;
+}
+.fill-input.correct { border-color:var(--mint); color:var(--mint); background:rgba(46,205,167,0.08); }
+.fill-input.wrong { border-color:var(--rose); color:var(--rose); background:rgba(245,91,122,0.08); }
+.fill-check-btn {
+  padding:10px 22px; border-radius:var(--r); background:var(--indigo);
+  border:none; color:#fff; font-family:'Inter',sans-serif; font-size:14px;
+  font-weight:700; cursor:pointer;
+}
+.fill-result { margin-top:14px; font-size:14px; }
+
+/* ── BADGE ── */
+.badge {
+  display:inline-flex; align-items:center; gap:5px; padding:3px 10px;
+  border-radius:10px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;
+}
+.badge-list { background:rgba(91,110,245,0.2); color:var(--indigo-light); }
+.badge-tuple { background:rgba(46,205,167,0.15); color:var(--mint); }
+.badge-dict { background:rgba(245,166,35,0.15); color:var(--amber); }
+.badge-new { background:rgba(245,91,122,0.15); color:var(--rose); }
+
+/* ── COMPARE TABLE ── */
+.compare-table { width:100%; border-collapse:collapse; font-size:14px; }
+.compare-table th {
+  padding:12px 16px; text-align:left; font-weight:700;
+  background:var(--card2); border-bottom:1px solid var(--border);
+}
+.compare-table td { padding:11px 16px; border-bottom:1px solid var(--border); color:#BCC8DC; }
+.compare-table tr:last-child td { border-bottom:none; }
+.compare-table tr:hover td { background:rgba(255,255,255,0.02); }
+
+/* ── METHOD CARD ── */
+.method-card {
+  background:var(--card); border:1px solid var(--border); border-radius:var(--r2);
+  padding:20px; transition:border-color 0.18s;
+}
+.method-card:hover { border-color:var(--indigo); }
+.method-name {
+  font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:700;
+  color:var(--mint); margin-bottom:8px;
+}
+.method-sig {
+  font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--indigo-light);
+  background:rgba(91,110,245,0.08); padding:4px 10px; border-radius:5px;
+  display:inline-block; margin-bottom:10px;
+}
+.method-desc { font-size:13px; color:var(--text-dim); margin-bottom:10px; line-height:1.5; }
+.method-example {
+  font-family:'JetBrains Mono',monospace; font-size:12px;
+  background:var(--code-bg); padding:8px 12px; border-radius:6px; color:#C9D4E8;
+}
+
+/* ── VISUAL ── */
+.visual-box {
+  background:var(--card2); border-radius:var(--r); padding:18px;
+  display:flex; gap:2px; align-items:center; flex-wrap:wrap;
+}
+.vis-cell {
+  min-width:52px; padding:8px 12px; border-radius:5px; text-align:center;
+  font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600;
+  border:1px solid;
+}
+.vis-idx {
+  font-size:10px; color:var(--text-dim); text-align:center; margin-top:4px;
+  font-family:'JetBrains Mono',monospace;
+}
+.vis-list .vis-cell { background:rgba(91,110,245,0.12); border-color:rgba(91,110,245,0.3); color:var(--indigo-light); }
+.vis-tuple .vis-cell { background:rgba(46,205,167,0.1); border-color:rgba(46,205,167,0.25); color:var(--mint); }
+.vis-dict .vis-cell { background:rgba(245,166,35,0.1); border-color:rgba(245,166,35,0.25); color:var(--amber); }
+
+/* ── INTERACTIVE EXPLORER ── */
+.explorer {
+  background:var(--card); border-radius:var(--r2); border:1px solid var(--border); padding:24px;
+}
+.explorer h3 { font-size:16px; font-weight:700; margin-bottom:14px; }
+.explorer-row { display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+.explorer-input {
+  flex:1; min-width:200px; padding:10px 14px; border-radius:var(--r);
+  background:var(--code-bg); border:1px solid var(--border);
+  color:var(--text); font-family:'JetBrains Mono',monospace; font-size:13px; outline:none;
+}
+.explorer-input:focus { border-color:var(--indigo); }
+.explorer-btn {
+  padding:10px 18px; border-radius:var(--r); border:none;
+  background:var(--indigo); color:#fff; font-family:'Inter',sans-serif;
+  font-size:13px; font-weight:700; cursor:pointer; transition:background 0.18s;
+}
+.explorer-btn:hover { background:var(--indigo-light); }
+.explorer-ops { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+.op-btn {
+  padding:7px 14px; border-radius:20px; border:1px solid var(--border);
+  background:var(--navy2); color:var(--text-dim); font-size:12px; font-weight:600;
+  cursor:pointer; transition:all 0.18s; font-family:'Inter',sans-serif;
+}
+.op-btn:hover { border-color:var(--mint); color:var(--mint); }
+.explorer-output {
+  background:var(--code-bg); border-radius:var(--r); border:1px solid var(--border);
+  padding:14px; font-family:'JetBrains Mono',monospace; font-size:13px;
+  color:#8ECFB5; min-height:80px; line-height:1.6; white-space:pre-wrap;
+}
+
+/* ── COMPREHENSION BUILDER ── */
+.comp-builder {
+  background:var(--card); border-radius:var(--r2); border:1px solid var(--border); padding:24px;
+}
+.comp-row {
+  display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+  font-family:'JetBrains Mono',monospace; font-size:14px; margin:16px 0;
+}
+.comp-static { color:var(--indigo-light); }
+.comp-sel {
+  padding:6px 10px; border-radius:6px; border:1px solid var(--indigo);
+  background:rgba(91,110,245,0.1); color:var(--indigo-light);
+  font-family:'JetBrains Mono',monospace; font-size:14px; outline:none;
+}
+.comp-result {
+  background:var(--code-bg); border-radius:var(--r); padding:14px;
+  font-family:'JetBrains Mono',monospace; font-size:13px; color:#8ECFB5;
+  margin-top:12px; border:1px solid var(--border); min-height:48px;
+}
+
+/* ── SCROLL REVEAL ── */
+.reveal { opacity:0; transform:translateY(18px); transition:opacity 0.5s, transform 0.5s; }
+.reveal.visible { opacity:1; transform:none; }
+
+/* ── FOOTER ── */
+footer {
+  text-align:center; padding:32px 24px; color:var(--text-dim); font-size:13px;
+  border-top:1px solid var(--border); margin-top:40px;
+}
+footer a { color:var(--indigo-light); text-decoration:none; }
+footer a:hover { text-decoration:underline; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width:6px; height:6px; }
+::-webkit-scrollbar-track { background:var(--navy); }
+::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px) {
+  .hero h1 { font-size:26px; }
+  .grid-2, .grid-3 { grid-template-columns:1fr; }
+  .match-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="https://scholarnest21.netlify.app" target="_blank" rel="noopener">
+    <div class="logo-icon">SN</div>
+    <div>
+      <div class="logo-text">ScholarNest</div>
+      <div class="logo-sub">scholarnest21.netlify.app</div>
+    </div>
+  </a>
+  <button class="nav-btn active" onclick="showTab('lists',this)">Lists</button>
+  <button class="nav-btn" onclick="showTab('tuples',this)">Tuples</button>
+  <button class="nav-btn" onclick="showTab('dicts',this)">Dicts</button>
+  <button class="nav-btn" onclick="showTab('advanced',this)">Advanced</button>
+  <button class="nav-btn" onclick="showTab('games',this)">🎮 Games</button>
+  <div class="xp-bar">⚡ <span>XP:</span> <span id="xp-display">0</span></div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Python Data Structures</div>
+  <h1>Master <span class="w-list">Lists</span>, <span class="w-tuple">Tuples</span><br>&amp; <span class="w-dict">Dictionaries</span></h1>
+  <p class="hero-sub">Theory, examples, flashcards, and games — everything you need to become a Python data structures expert.</p>
+  <div class="hero-pills">
+    <div class="pill pill-list">📋 8 List Topics</div>
+    <div class="pill pill-tuple">🔒 2 Tuple Topics</div>
+    <div class="pill pill-dict">📚 2 Dict Topics</div>
+  </div>
+</div>
+
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('lists',this)">📋 Lists</button>
+    <button class="tab" onclick="showTab('tuples',this)">🔒 Tuples</button>
+    <button class="tab" onclick="showTab('dicts',this)">📚 Dictionaries</button>
+    <button class="tab" onclick="showTab('advanced',this)">⚡ Advanced &amp; Comprehensions</button>
+    <button class="tab" onclick="showTab('cards',this)">🃏 Flashcards</button>
+    <button class="tab" onclick="showTab('games',this)">🎮 Games</button>
+    <button class="tab" onclick="showTab('compare',this)">⚖️ Compare</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     LISTS SECTION
+════════════════════════════════════ -->
+<div id="sec-lists" class="section active">
+  <div class="sec-header">
+    <h2>📋 Python Lists</h2>
+    <p>A list is an ordered, mutable collection that can hold items of any type. Lists are one of Python's most versatile data structures.</p>
+  </div>
+
+  <!-- Visual -->
+  <div class="theory-block reveal">
+    <h3>🎨 Visual: What is a List?</h3>
+    <p style="margin-bottom:14px;">A list stores elements in indexed slots. The index starts at <code style="color:var(--mint)">0</code>.</p>
+    <div class="vis-list visual-box">
+      <div><div class="vis-cell">42</div><div class="vis-idx">[0]</div></div>
+      <div><div class="vis-cell">"hi"</div><div class="vis-idx">[1]</div></div>
+      <div><div class="vis-cell">3.14</div><div class="vis-idx">[2]</div></div>
+      <div><div class="vis-cell">True</div><div class="vis-idx">[3]</div></div>
+      <div><div class="vis-cell">[1,2]</div><div class="vis-idx">[4]</div></div>
+    </div>
+    <p style="margin-top:10px; font-size:13px; color:var(--text-dim)">Lists are <strong style="color:var(--text)">heterogeneous</strong> — they can mix different types in one collection.</p>
+  </div>
+
+  <!-- List Operations -->
+  <div class="theory-block reveal">
+    <h3>⚙️ List Operations <span class="theory-tag badge-list">Basics</span></h3>
+    <p>Lists support common sequence operations:</p>
+    <ul style="margin-top:10px;">
+      <li><strong style="color:var(--text)">+</strong> — concatenation: joins two lists</li>
+      <li><strong style="color:var(--text)">*</strong> — repetition: repeats a list n times</li>
+      <li><strong style="color:var(--text)">in</strong> — membership: checks if element exists</li>
+      <li><strong style="color:var(--text)">len()</strong> — returns number of elements</li>
+      <li><strong style="color:var(--text)">[ ]</strong> — indexing: access by position</li>
+    </ul>
+    <div class="code-block" style="margin-top:14px;">
+      <div class="code-header"><div class="code-dots"><span class="code-dot d1"></span><span class="code-dot d2"></span><span class="code-dot d3"></span></div>list_operations.py</div>
+<pre><span class="cm"># Creating lists</span>
+fruits = [<span class="str">"apple"</span>, <span class="str">"banana"</span>, <span class="str">"cherry"</span>]
+nums   = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]
+
+<span class="cm"># Concatenation</span>
+combined = fruits + [<span class="str">"date"</span>]
+<span class="kw">print</span>(combined)   <span class="cm"># ['apple', 'banana', 'cherry', 'date']</span>
+
+<span class="cm"># Repetition</span>
+<span class="kw">print</span>([<span class="num">0</span>] * <span class="num">3</span>)     <span class="cm"># [0, 0, 0]</span>
+
+<span class="cm"># Membership</span>
+<span class="kw">print</span>(<span class="str">"banana"</span> <span class="kw">in</span> fruits)  <span class="cm"># True</span>
+
+<span class="cm"># Indexing</span>
+<span class="kw">print</span>(fruits[<span class="num">0</span>])  <span class="cm"># apple</span>
+<span class="kw">print</span>(fruits[-<span class="num">1</span>]) <span class="cm"># cherry (negative = from end)</span>
+
+<span class="cm"># Length</span>
+<span class="kw">print</span>(<span class="fn">len</span>(fruits)) <span class="cm"># 3</span></pre>
+    </div>
+  </div>
+
+  <!-- List Slices -->
+  <div class="theory-block reveal">
+    <h3>✂️ List Slices <span class="theory-tag badge-list">Slicing</span></h3>
+    <p>Slices extract a <em>portion</em> of a list using the syntax <code style="color:var(--mint)">list[start:stop:step]</code>. The <strong>start</strong> is inclusive, <strong>stop</strong> is exclusive.</p>
+    <div class="code-block" style="margin-top:14px;">
+      <div class="code-header"><div class="code-dots"><span class="code-dot d1"></span><span class="code-dot d2"></span><span class="code-dot d3"></span></div>slices.py</div>
+<pre>nums = [<span class="num">0</span>, <span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>, <span class="num">50</span>]
+
+<span class="kw">print</span>(nums[<span class="num">1</span>:<span class="num">4</span>])   <span class="cm"># [10, 20, 30]  — index 1 to 3</span>
+<span class="kw">print</span>(nums[:<span class="num">3</span>])    <span class="cm"># [0, 10, 20]   — from start to 2</span>
+<span class="kw">print</span>(nums[<span class="num">3</span>:])    <span class="cm"># [30, 40, 50]  — from 3 to end</span>
+<span class="kw">print</span>(nums[::])    <span class="cm"># [0,10,20,30,40,50] — full copy</span>
+<span class="kw">print</span>(nums[::<span class="num">2</span>])   <span class="cm"># [0, 20, 40]   — every 2nd</span>
+<span class="kw">print</span>(nums[::-<span class="num">1</span>])  <span class="cm"># [50,40,30,20,10,0] — reversed!</span>
+
+<span class="cm"># Slices can also assign</span>
+nums[<span class="num">1</span>:<span class="num">3</span>] = [<span class="num">99</span>, <span class="num">88</span>]
+<span class="kw">print</span>(nums)        <span class="cm"># [0, 99, 88, 30, 40, 50]</span></pre>
+    </div>
+  </div>
+
+  <!-- List Methods -->
+  <div class="theory-block reveal">
+    <h3>🛠️ List Methods <span class="theory-tag badge-list">Methods</span></h3>
+    <p>Lists have powerful built-in methods. They modify the list <em>in-place</em> (no return value for mutating methods).</p>
+    <div class="grid-3" style="margin-top:16px;">
+      <div class="method-card">
+        <div class="method-name">append()</div>
+        <div class="method-sig">list.append(item)</div>
+        <div class="method-desc">Adds item to the end of the list.</div>
+        <div class="method-example">lst = [1,2]<br>lst.append(3)<br><span style="color:var(--mint)"># [1, 2, 3]</span></div>
+      </div>
+      <div class="method-card">
+        <div class="method-name">insert()</div>
+        <div class="method-sig">list.insert(i, item)</div>
+        <div class="method-desc">Inserts item at index i, shifting others right.</div>
+        <div class="method-example">lst = [1,3]<br>lst.insert(1, 2)<br><span style="color:var(--mint)"># [1, 2, 3]</span></div>
+      </div>
+      <div class="method-card">
+        <div class="method-name">remove()</div>
+        <div class="method-sig">list.remove(item)</div>
+        <div class="method-desc">Removes first occurrence of item.</div>
+        <div class="method-example">lst = [1,2,2,3]<br>lst.remove(2)<br><span style="color:var(--mint)"># [1, 2, 3]</span></div>
+      </div>
+      <div class="method-card">
+        <div class="method-name">pop()</div>
+        <div class="method-sig">list.pop([i])</div>
+        <div class="method-desc">Removes &amp; returns item at index i (default last).</div>
+        <div class="method-example">lst = [1,2,3]<br>x = lst.pop()<br><span style="color:var(--mint)"># x=3, lst=[1,2]</span></div>
+      </div>
+      <div class="method-card">
+        <div class="method-name">sort()</div>
+        <div class="method-sig">list.sort(reverse=False)</div>
+        <div class="method-desc">Sorts the list in-place (ascending by default).</div>
+        <div class="method-example">lst = [3,1,2]<br>lst.sort()<br><span style="color:var(--mint)"># [1, 2, 3]</span></div>
+      </div>
+      <div class="method-card">
+        <div class="method-name">reverse()</div>
+        <div class="method-sig">list.reverse()</div>
+        <div class="method-desc">Reverses the list in-place.</div>
+        <div class="method-example">lst = [1,2,3]<br>lst.reverse()<br><span style="color:var(--mint)"># [3, 2, 1]</span></div>
+      </div>
+      <div class="method-card">
+        <div class="method-name">extend()</div>
+        <div class="method-sig">list.extend(iterable)</div>
+        <div class="method-desc">Appends all items from another iterable.</div>
+        <div class="method-example">lst = [1,2]<br>lst.extend([3,4])<br><span style="color:var(--mint)"># [1, 2, 3, 4]</span></div>
+      </div>
+      <div class="method-card">
+        <div class="method-name">index()</div>
+        <div class="method-sig">list.index(item)</div>
+        <div class="method-desc">Returns the index of first occurrence.</div>
+        <div class="method-example">lst = ['a','b','c']<br>lst.index('b')<br><span style="color:var(--mint)"># 1</span></div>
+      </div>
+      <div class="method-card">
+        <div class="method-name">count()</div>
+        <div class="method-sig">list.count(item)</div>
+        <div class="method-desc">Returns how many times item appears.</div>
+        <div class="method-example">lst = [1,2,2,3]<br>lst.count(2)<br><span style="color:var(--mint)"># 2</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- List Loop -->
+  <div class="theory-block reveal">
+    <h3>🔄 List Loop <span class="theory-tag badge-list">Loops</span></h3>
+    <p>Lists are <em>iterable</em> — you can loop through them in multiple ways.</p>
+    <div class="code-block" style="margin-top:14px;">
+      <div class="code-header"><div class="code-dots"><span class="code-dot d1"></span><span class="code-dot d2"></span><span class="code-dot d3"></span></div>list_loops.py</div>
+<pre>fruits = [<span class="str">"apple"</span>, <span class="str">"banana"</span>, <span class="str">"cherry"</span>]
+
+<span class="cm"># Method 1: simple for loop</span>
+<span class="kw">for</span> fruit <span class="kw">in</span> fruits:
+    <span class="kw">print</span>(fruit)
+
+<span class="cm"># Method 2: index-based loop</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(fruits)):
+    <span class="kw">print</span>(i, fruits[i])
+
+<span class="cm"># Method 3: enumerate (best of both!)</span>
+<span class="kw">for</span> idx, fruit <span class="kw">in</span> <span class="fn">enumerate</span>(fruits):
+    <span class="kw">print</span>(idx, fruit)
+
+<span class="cm"># Method 4: while loop</span>
+i = <span class="num">0</span>
+<span class="kw">while</span> i &lt; <span class="fn">len</span>(fruits):
+    <span class="kw">print</span>(fruits[i])
+    i += <span class="num">1</span>
+
+<span class="cm"># Useful: zip two lists together</span>
+names  = [<span class="str">"Alice"</span>, <span class="str">"Bob"</span>]
+scores = [<span class="num">95</span>, <span class="num">87</span>]
+<span class="kw">for</span> name, score <span class="kw">in</span> <span class="fn">zip</span>(names, scores):
+    <span class="kw">print</span>(name, <span class="str">"scored"</span>, score)</pre>
+    </div>
+  </div>
+
+  <!-- Mutability, Aliasing, Cloning -->
+  <div class="grid-2">
+    <div class="theory-block reveal">
+      <h3>🔄 Mutability</h3>
+      <p>Lists are <strong style="color:var(--mint)">mutable</strong> — elements can be changed after creation. This is what distinguishes lists from tuples.</p>
+      <div class="code-block" style="margin-top:12px;">
+        <div class="code-header"><div class="code-dots"><span class="code-dot d1"></span><span class="code-dot d2"></span><span class="code-dot d3"></span></div></div>
+<pre>lst = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]
+lst[<span class="num">1</span>] = <span class="num">99</span>
+<span class="kw">print</span>(lst)   <span class="cm"># [1, 99, 3]</span>
+
+lst.append(<span class="num">4</span>)
+<span class="kw">print</span>(lst)   <span class="cm"># [1, 99, 3, 4]</span></pre>
+      </div>
+    </div>
+    <div class="theory-block reveal">
+      <h3>🔗 Aliasing vs Cloning</h3>
+      <p><strong style="color:var(--rose)">Aliasing</strong>: two variables point to the same list object. <strong style="color:var(--mint)">Cloning</strong>: creates an independent copy.</p>
+      <div class="code-block" style="margin-top:12px;">
+        <div class="code-header"><div class="code-dots"><span class="code-dot d1"></span><span class="code-dot d2"></span><span class="code-dot d3"></span></div></div>
+<pre>a = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]
+
+<span class="cm"># ALIASING — same object!</span>
+b = a
+b[<span class="num">0</span>] = <span class="num">99</span>
+<span class="kw">print</span>(a)  <span class="cm"># [99, 2, 3] ← a changed!</span>
+
+<span class="cm"># CLONING — independent copy</span>
+c = a[:]       <span class="cm"># or: list(a) or a.copy()</span>
+c[<span class="num">0</span>] = <span class="num">0</span>
+<span class="kw">print</span>(a)  <span class="cm"># [99, 2, 3] ← a unchanged!</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- List Parameters -->
+  <div class="theory-block reveal">
+    <h3>📨 List Parameters <span class="theory-tag badge-list">Functions</span></h3>
+    <p>When you pass a list to a function, Python passes a <em>reference</em> (not a copy). Modifications inside the function affect the original list!</p>
+    <div class="code-block" style="margin-top:14px;">
+      <div class="code-header"><div class="code-dots"><span class="code-dot d1"></span><span class="code-dot d2"></span><span class="code-dot d3"></span></div>list_params.py</div>
+<pre><span class="cm"># Mutates the original — side effect!</span>
+<span class="kw">def</span> <span class="fn">double_all</span>(lst):
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(lst)):
+        lst[i] *= <span class="num">2</span>
+
+nums = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]
+<span class="fn">double_all</span>(nums)
+<span class="kw">print</span>(nums)   <span class="cm"># [2, 4, 6]  ← original changed!</span>
+
+<span class="cm"># Safe version — pass a copy</span>
+<span class="kw">def</span> <span class="fn">double_safe</span>(lst):
+    lst = lst[:]          <span class="cm"># clone inside</span>
+    <span class="kw">return</span> [x * <span class="num">2</span> <span class="kw">for</span> x <span class="kw">in</span> lst]
+
+original = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]
+result = <span class="fn">double_safe</span>(original)
+<span class="kw">print</span>(original)  <span class="cm"># [1, 2, 3]  ← unchanged!</span>
+<span class="kw">print</span>(result)    <span class="cm"># [2, 4, 6]</span></pre>
+    </div>
+  </div>
+
+  <!-- Interactive List Explorer -->
+  <div class="explorer reveal">
+    <h3>🔬 Interactive List Explorer</h3>
+    <p style="font-size:13px; color:var(--text-dim); margin-bottom:14px;">Enter comma-separated values, then try operations!</p>
+    <div class="explorer-row">
+      <input class="explorer-input" id="list-input" type="text" value="3, 1, 4, 1, 5, 9, 2, 6" placeholder="Enter comma-separated values">
+      <button class="explorer-btn" onclick="loadList()">Load List</button>
+    </div>
+    <div class="explorer-ops">
+      <button class="op-btn" onclick="listOp('sort')">sort()</button>
+      <button class="op-btn" onclick="listOp('reverse')">reverse()</button>
+      <button class="op-btn" onclick="listOp('len')">len()</button>
+      <button class="op-btn" onclick="listOp('min')">min()</button>
+      <button class="op-btn" onclick="listOp('max')">max()</button>
+      <button class="op-btn" onclick="listOp('sum')">sum()</button>
+      <button class="op-btn" onclick="listOp('slice')">[:3] slice</button>
+      <button class="op-btn" onclick="listOp('pop')">pop()</button>
+    </div>
+    <div class="explorer-output" id="list-output">Load a list and try an operation above...</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     TUPLES SECTION
+════════════════════════════════════ -->
+<div id="sec-tuples" class="section">
+  <div class="sec-header">
+    <h2>🔒 Python Tuples</h2>
+    <p>Tuples are ordered, <strong>immutable</strong> sequences. Once created, they cannot be modified — making them perfect for fixed data.</p>
+  </div>
+
+  <div class="theory-block reveal">
+    <h3>🎨 Visual: Tuples vs Lists</h3>
+    <p style="margin-bottom:12px;"><strong style="color:var(--mint)">Tuple</strong> — locked after creation:</p>
+    <div class="vis-tuple visual-box" style="margin-bottom:16px;">
+      <div><div class="vis-cell">10</div><div class="vis-idx">[0]</div></div>
+      <div><div class="vis-cell">20</div><div class="vis-idx">[1]</div></div>
+      <div><div class="vis-cell">30</div><div class="vis-idx">[2]</div></div>
+      <div style="display:flex;align-items:center;padding-left:8px;color:var(--mint);font-size:22px;">🔒</div>
+    </div>
+    <p style="font-size:13px; color:var(--text-dim)">Tuples are defined with parentheses <code style="color:var(--mint)">()</code> or just commas. A single-element tuple needs a trailing comma: <code style="color:var(--mint)">(42,)</code></p>
+  </div>
+
+  <div class="theory-block reveal">
+    <h3>📌 Tuple Assignment (Unpacking) <span class="theory-tag badge-tuple">Key Concept</span></h3>
+    <p>One of Python's most elegant features — assign multiple variables at once from a tuple.</p>
+    <div class="code-block" style="margin-top:14px;">
+      <div class="code-header"><div class="code-dots"><span class="code-dot d1"></span><span class="code-dot d2"></span><span class="code-dot d3"></span></div>tuple_assignment.py</div>
+<pre><span class="cm"># Basic tuple creation</span>
+point = (<span class="num">3</span>, <span class="num">4</span>)
+color = (<span class="num">255</span>, <span class="num">128</span>, <span class="num">0</span>)
+
+<span class="cm"># Tuple assignment (unpacking)</span>
+x, y = point
+<span class="kw">print</span>(x, y)          <span class="cm"># 3  4</span>
+
+r, g, b = color
+<span class="kw">print</span>(r, g, b)       <span class="cm"># 255 128 0</span>
+
+<span class="cm"># Elegant swap — no temp variable needed!</span>
+a, b = <span class="num">10</span>, <span class="num">20</span>
+a, b = b, a          <span class="cm"># magic swap!</span>
+<span class="kw">print</span>(a, b)          <span class="cm"># 20 10</span>
+
+<span class="cm"># Extended unpacking with *</span>
+first, *rest = (<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>)
+<span class="kw">print</span>(first)         <span class="cm"># 1</span>
+<span class="kw">print</span>(rest)          <span class="cm"># [2, 3, 4, 5]</span>
+
+<span class="cm"># Ignore values with _</span>
+_, middle, _ = (<span class="str">"a"</span>, <span class="str">"b"</span>, <span class="str">"c"</span>)
+<span class="kw">print</span>(middle)        <span class="cm"># b</span></pre>
+    </div>
+  </div>
+
+  <div class="theory-block reveal">
+    <h3>↩️ Tuple as Return Value <span class="theory-tag badge-tuple">Functions</span></h3>
+    <p>Functions can return multiple values via tuples — Python's cleanest way to return more than one result.</p>
+    <div class="code-block" style="margin-top:14px;">
+      <div class="code-header"><div class="code-dots"><span class="code-dot d1"></span><span class="code-dot d2"></span><span class="code-dot d3"></span></div>tuple_return.py</div>
+<pre><span class="cm"># Return min and max together</span>
+<span class="kw">def</span> <span class="fn">min_max</span>(numbers):
+    <span class="kw">return</span> <span class="fn">min</span>(numbers), <span class="fn">max</span>(numbers)
+
+data = [<span class="num">4</span>, <span class="num">2</span>, <span class="num">9</span>, <span class="num">1</span>, <span class="num">7</span>]
+lo, hi = <span class="fn">min_max</span>(data)
+<span class="kw">print</span>(<span class="str">f"Min: </span>{lo}<span class="str">, Max: </span>{hi}<span class="str">"</span>)  <span class="cm"># Min: 1, Max: 9</span>
+
+<span class="cm"># Divmod — quotient and remainder</span>
+quotient, remainder = <span class="fn">divmod</span>(<span class="num">17</span>, <span class="num">5</span>)
+<span class="kw">print</span>(quotient, remainder)    <span class="cm"># 3  2</span>
+
+<span class="cm"># Return coordinate</span>
+<span class="kw">def</span> <span class="fn">get_location</span>():
+    latitude  = <span class="num">26.9124</span>
+    longitude = <span class="num">75.7873</span>
+    <span class="kw">return</span> latitude, longitude
+
+lat, lon = <span class="fn">get_location</span>()
+<span class="kw">print</span>(<span class="str">f"Jaipur: </span>{lat}<span class="str">°N </span>{lon}<span class="str">°E"</span>)</pre>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="theory-block reveal">
+      <h3>✅ When to Use Tuples</h3>
+      <ul>
+        <li>Representing fixed data (coordinates, RGB colors, dates)</li>
+        <li>Dictionary keys (lists can't be keys!)</li>
+        <li>Function return values</li>
+        <li>As constants that shouldn't change</li>
+        <li>Slightly faster than lists (memory efficient)</li>
+      </ul>
+    </div>
+    <div class="theory-block reveal">
+      <h3>🔍 Tuple Operations</h3>
+      <div class="code-block">
+        <div class="code-header"><div class="code-dots"><span class="code-dot d1"></span><span class="code-dot d2"></span><span class="code-dot d3"></span></div></div>
+<pre>t = (<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">2</span>)
+<span class="fn">len</span>(t)       <span class="cm"># 4</span>
+t[<span class="num">1</span>]         <span class="cm"># 2</span>
+t[<span class="num">1</span>:<span class="num">3</span>]       <span class="cm"># (2, 3)</span>
+t.count(<span class="num">2</span>)  <span class="cm"># 2</span>
+t.index(<span class="num">3</span>)  <span class="cm"># 2</span>
+<span class="num">3</span> <span class="kw">in</span> t       <span class="cm"># True</span>
+t + (<span class="num">4</span>,)     <span class="cm"># (1,2,3,2,4)</span>
+t * <span class="num">2</span>        <span class="cm"># (1,2,3,2,1,2,3,2)</span></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     DICTIONARIES SECTION
+════════════════════════════════════ -->
+<div id="sec-dicts" class="section">
+  <div class="sec-header">
+    <h2>📚 Python Dictionaries</h2>
+    <p>Dictionaries store data as <strong>key-value pairs</strong>. Keys must be unique and immutable; values can be anything.</p>
+  </div>
+
+  <div class="theory-block reveal">
+    <h3>🎨 Visual: Dictionary Structure</h3>
+    <div class="vis-dict visual-box" style="gap:8px; flex-direction:column;">
+      <div style="display:flex;gap:8px;align-items:center;">
+        <div class="vis-cell" style="min-width:80px;font-size:11px;color:var(--amber)">"name"</div>
+        <span style="color:var(--text-dim)">→</span>
+        <div class="vis-cell" style="min-width:80px;">"Alice"</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <div class="vis-cell" style="min-width:80px;font-size:11px;color:var(--amber)">"age"</div>
+        <span style="color:var(--text-dim)">→</span>
+        <div class="vis-cell" style="min-width:80px;">25</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <div class="vis-cell" style="min-width:80px;font-size:11px;color:var(--amber)">"city"</div>
+        <span style="color:var(--text-dim)">→</span>
+        <div class="vis-cell" style="min-width:80px;">"Jaipur"</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theory-block reveal">
+    <h3>⚙️ Dictionary Operations <span class="theory-tag badge-dict">Operations</span></h3>
+    <div class="code-block" style="margin-top:12px;">
+      <div class="code-header"><div class="code-dots"><span class="code-dot d1"></span><span class="code-dot d2"></span><span class="code-dot d3"></span></div>dict_ops.py</div>
+<pre><span class="cm"># Creating a dictionary</span>
+student = {
+    <span class="str">"name"</span>:  <span class="str">"Riya"</span>,
+    <span class="str">"grade"</span>: <span class="num">10</span>,
+    <span class="str">"city"</span>:  <span class="str">"Jaipur"</span>
+}
+
+<span class="cm"># Access by key</span>
+<span class="kw">print</span>(student[<span class="str">"name"</span>])       <span class="cm"># Riya</span>
+
+<span class="cm"># Add / update</span>
+student[<span class="str">"score"</span>] = <span class="num">95</span>         <span class="cm"># add new key</span>
+student[<span class="str">"grade"</span>] = <span class="num">11</span>         <span class="cm"># update existing</span>
+
+<span class="cm"># Check existence</span>
+<span class="kw">print</span>(<span class="str">"name"</span> <span class="kw">in</span> student)      <span class="cm"># True</span>
+<span class="kw">print</span>(<span class="str">"email"</span> <span class="kw">in</span> student)     <span class="cm"># False</span>
+
+<span class="cm"># Delete a key</span>
+<span class="kw">del</span> student[<span class="str">"city"</span>]
+
+<span class="cm"># Safe access with get()</span>
+<span class="kw">print</span>(student.get(<span class="str">"email"</span>, <span class="str">"N/A"</span>))  <span class="cm"># N/A (no error!)</span>
+
+<span class="cm"># Length</span>
+<span class="kw">print</span>(<span class="fn">len</span>(student))           <span class="cm"># 3</span></pre>
+    </div>
+  </div>
+
+  <div class="theory-block reveal">
+    <h3>🛠️ Dictionary Methods <span class="theory-tag badge-dict">Methods</span></h3>
+    <div class="grid-3" style="margin-top:14px;">
+      <div class="method-card">
+        <div class="method-name">keys()</div>
+        <div class="method-sig">dict.keys()</div>
+        <div class="method-desc">Returns all keys as a view object.</div>
+        <div class="method-example">d = {"a":1,"b":2}<br>d.keys()<br><span style="color:var(--mint)"># dict_keys(['a','b'])</span></div>
+      </div>
+      <div class="method-card">
+        <div class="method-name">values()</div>
+        <div class="method-sig">dict.values()</div>
+        <div class="method-desc">Returns all values as a view object.</div>
+        <div class="method-example">d = {"a":1,"b":2}<br>d.values()<br><span style="color:var(--mint)"># dict_values([1, 2])</span></div>
+      </div>
+      <div class="method-card">
+        <div class="method-name">items()</div>
+        <div class="method-sig">dict.items()</div>
+        <div class="method-desc">Returns key-value pairs as tuples.</div>
+        <div class="method-example">d = {"a":1}<br>d.items()<br><span style="color:var(--mint)"># [('a', 1)]</span></div>
+      </div>
+      <div class="method-card">
+        <div class="method-name">get()</div>
+        <div class="method-sig">dict.get(key, default)</div>
+        <div class="method-desc">Returns value or default (no KeyError).</div>
+        <div class="method-example">d = {"a":1}<br>d.get("z", 0)<br><span style="color:var(--mint)"># 0</span></div>
+      </div>
+      <div class="method-card">
+        <div class="method-name">update()</div>
+        <div class="method-sig">dict.update(other)</div>
+        <div class="method-desc">Merges another dict into this one.</div>
+        <div class="method-example">a = {"x":1}<br>a.update({"y":2})<br><span style="color:var(--mint)"># {"x":1,"y":2}</span></div>
+      </div>
+      <div class="method-card">
+        <div class="method-name">pop()</div>
+        <div class="method-sig">dict.pop(key)</div>
+        <div class="method-desc">Removes key and returns its value.</div>
+        <div class="method-example">d = {"a":1,"b":2}<br>d.pop("a")<br><span style="color:var(--mint)"># 1, d={"b":2}</span></div>
+      </div>
+      <div class="method-card">
+        <div class="method-name">setdefault()</div>
+        <div class="method-sig">dict.setdefault(k, v)</div>
+        <div class="method-desc">Returns value if key exists, else sets it.</div>
+        <div class="method-example">d = {}<br>d.setdefault("x", 0)<br><span style="color:var(--mint)"># d={"x":0}</span></div>
+      </div>
+      <div class="method-card">
+        <div class="method-name">clear()</div>
+        <div class="method-sig">dict.clear()</div>
+        <div class="method-desc">Removes all items from the dictionary.</div>
+        <div class="method-example">d = {"a":1,"b":2}<br>d.clear()<br><span style="color:var(--mint)"># {}</span></div>
+      </div>
+      <div class="method-card">
+        <div class="method-name">copy()</div>
+        <div class="method-sig">dict.copy()</div>
+        <div class="method-desc">Returns a shallow copy of the dictionary.</div>
+        <div class="method-example">d = {"a":1}<br>e = d.copy()<br><span style="color:var(--mint)"># e is independent</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theory-block reveal">
+    <h3>🔄 Looping Through Dictionaries</h3>
+    <div class="code-block" style="margin-top:12px;">
+      <div class="code-header"><div class="code-dots"><span class="code-dot d1"></span><span class="code-dot d2"></span><span class="code-dot d3"></span></div>dict_loops.py</div>
+<pre>inventory = {<span class="str">"apples"</span>: <span class="num">50</span>, <span class="str">"bananas"</span>: <span class="num">20</span>, <span class="str">"oranges"</span>: <span class="num">35</span>}
+
+<span class="cm"># Loop over keys</span>
+<span class="kw">for</span> item <span class="kw">in</span> inventory:
+    <span class="kw">print</span>(item)          <span class="cm"># apples, bananas, oranges</span>
+
+<span class="cm"># Loop over values</span>
+<span class="kw">for</span> qty <span class="kw">in</span> inventory.values():
+    <span class="kw">print</span>(qty)           <span class="cm"># 50, 20, 35</span>
+
+<span class="cm"># Loop over key-value pairs (most common)</span>
+<span class="kw">for</span> item, qty <span class="kw">in</span> inventory.items():
+    <span class="kw">print</span>(<span class="str">f"{item}: {qty} in stock"</span>)
+
+<span class="cm"># Word frequency counter</span>
+text = <span class="str">"the cat sat on the mat the cat"</span>
+freq = {}
+<span class="kw">for</span> word <span class="kw">in</span> text.split():
+    freq[word] = freq.get(word, <span class="num">0</span>) + <span class="num">1</span>
+<span class="kw">print</span>(freq)
+<span class="cm"># {'the': 3, 'cat': 2, 'sat': 1, 'on': 1, 'mat': 1}</span></pre>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     ADVANCED SECTION
+════════════════════════════════════ -->
+<div id="sec-advanced" class="section">
+  <div class="sec-header">
+    <h2>⚡ Advanced List Processing &amp; Comprehensions</h2>
+    <p>Level up with powerful list processing techniques including nested loops, functional programming, and the Pythonic list comprehension syntax.</p>
+  </div>
+
+  <div class="theory-block reveal">
+    <h3>🔧 Advanced List Processing</h3>
+    <div class="code-block" style="margin-top:12px;">
+      <div class="code-header"><div class="code-dots"><span class="code-dot d1"></span><span class="code-dot d2"></span><span class="code-dot d3"></span></div>advanced_lists.py</div>
+<pre><span class="cm"># map() — apply function to each element</span>
+nums    = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>]
+squared = <span class="fn">list</span>(<span class="fn">map</span>(<span class="kw">lambda</span> x: x**<span class="num">2</span>, nums))
+<span class="kw">print</span>(squared)    <span class="cm"># [1, 4, 9, 16]</span>
+
+<span class="cm"># filter() — keep elements matching condition</span>
+evens = <span class="fn">list</span>(<span class="fn">filter</span>(<span class="kw">lambda</span> x: x % <span class="num">2</span> == <span class="num">0</span>, nums))
+<span class="kw">print</span>(evens)      <span class="cm"># [2, 4]</span>
+
+<span class="cm"># sorted() — returns new sorted list</span>
+words   = [<span class="str">"banana"</span>, <span class="str">"apple"</span>, <span class="str">"cherry"</span>]
+s_words = <span class="fn">sorted</span>(words)
+<span class="kw">print</span>(s_words)    <span class="cm"># ['apple', 'banana', 'cherry']</span>
+
+<span class="cm"># sorted() by key</span>
+by_len  = <span class="fn">sorted</span>(words, key=<span class="fn">len</span>)
+<span class="kw">print</span>(by_len)     <span class="cm"># ['apple', 'banana', 'cherry']</span>
+
+<span class="cm"># Nested lists (2D matrix)</span>
+matrix = [[<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>], [<span class="num">4</span>,<span class="num">5</span>,<span class="num">6</span>], [<span class="num">7</span>,<span class="num">8</span>,<span class="num">9</span>]]
+<span class="kw">for</span> row <span class="kw">in</span> matrix:
+    <span class="kw">for</span> val <span class="kw">in</span> row:
+        <span class="kw">print</span>(val, end=<span class="str">" "</span>)
+
+<span class="cm"># Flatten nested list</span>
+flat = [val <span class="kw">for</span> row <span class="kw">in</span> matrix <span class="kw">for</span> val <span class="kw">in</span> row]
+<span class="kw">print</span>(flat)  <span class="cm"># [1, 2, 3, 4, 5, 6, 7, 8, 9]</span></pre>
+    </div>
+  </div>
+
+  <div class="theory-block reveal">
+    <h3>✨ List Comprehension <span class="theory-tag badge-new">Pythonic</span></h3>
+    <p>List comprehensions are a concise, readable way to create lists. The syntax is: <code style="color:var(--mint)">[expression for item in iterable if condition]</code></p>
+    <div class="code-block" style="margin-top:14px;">
+      <div class="code-header"><div class="code-dots"><span class="code-dot d1"></span><span class="code-dot d2"></span><span class="code-dot d3"></span></div>list_comprehension.py</div>
+<pre><span class="cm"># Basic: square each number</span>
+squares = [x**<span class="num">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10</span>)]
+<span class="kw">print</span>(squares)   <span class="cm"># [0,1,4,9,16,25,36,49,64,81]</span>
+
+<span class="cm"># With condition: only evens</span>
+evens  = [x <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="num">20</span>) <span class="kw">if</span> x % <span class="num">2</span> == <span class="num">0</span>]
+<span class="kw">print</span>(evens)     <span class="cm"># [0,2,4,6,8,10,12,14,16,18]</span>
+
+<span class="cm"># String transformation</span>
+words  = [<span class="str">"hello"</span>, <span class="str">"world"</span>, <span class="str">"python"</span>]
+upper  = [w.upper() <span class="kw">for</span> w <span class="kw">in</span> words]
+<span class="kw">print</span>(upper)     <span class="cm"># ['HELLO', 'WORLD', 'PYTHON']</span>
+
+<span class="cm"># Nested comprehension (matrix transpose)</span>
+matrix    = [[<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>],[<span class="num">4</span>,<span class="num">5</span>,<span class="num">6</span>]]
+transpose = [[row[i] <span class="kw">for</span> row <span class="kw">in</span> matrix] <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">3</span>)]
+<span class="kw">print</span>(transpose) <span class="cm"># [[1,4],[2,5],[3,6]]</span>
+
+<span class="cm"># Dict comprehension</span>
+scores    = {<span class="str">"A"</span>:<span class="num">90</span>, <span class="str">"B"</span>:<span class="num">75</span>, <span class="str">"C"</span>:<span class="num">85</span>}
+passed    = {k: v <span class="kw">for</span> k, v <span class="kw">in</span> scores.items() <span class="kw">if</span> v >= <span class="num">80</span>}
+<span class="kw">print</span>(passed)    <span class="cm"># {'A': 90, 'C': 85}</span>
+
+<span class="cm"># Set comprehension</span>
+unique_sq = {x**<span class="num">2</span> <span class="kw">for</span> x <span class="kw">in</span> [-<span class="num">2</span>,-<span class="num">1</span>,<span class="num">0</span>,<span class="num">1</span>,<span class="num">2</span>]}
+<span class="kw">print</span>(unique_sq) <span class="cm"># {0, 1, 4}</span></pre>
+    </div>
+  </div>
+
+  <!-- Comprehension Builder -->
+  <div class="comp-builder reveal">
+    <h3>🔧 Comprehension Builder</h3>
+    <p style="font-size:13px; color:var(--text-dim); margin-bottom:6px;">Build a list comprehension interactively and see the result!</p>
+    <div class="comp-row">
+      <span class="comp-static">[</span>
+      <select class="comp-sel" id="comp-expr" onchange="runComp()">
+        <option value="x">x</option>
+        <option value="x**2">x²</option>
+        <option value="x*2">x×2</option>
+        <option value="x+10">x+10</option>
+        <option value="str(x)">str(x)</option>
+      </select>
+      <span class="comp-static">for x in range(</span>
+      <select class="comp-sel" id="comp-range" onchange="runComp()">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+      </select>
+      <span class="comp-static">)</span>
+      <select class="comp-sel" id="comp-cond" onchange="runComp()">
+        <option value="">no filter</option>
+        <option value="if x%2==0">if even</option>
+        <option value="if x%2!=0">if odd</option>
+        <option value="if x>3">if x&gt;3</option>
+        <option value="if x<5">if x&lt;5</option>
+      </select>
+      <span class="comp-static">]</span>
+    </div>
+    <div class="comp-result" id="comp-result">Result: []</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     FLASHCARDS SECTION
+════════════════════════════════════ -->
+<div id="sec-cards" class="section">
+  <div class="sec-header">
+    <h2>🃏 Flashcards</h2>
+    <p>Click any card to flip it and reveal the answer. Test your knowledge!</p>
+  </div>
+  <div id="cards-container" class="grid-3"></div>
+</div>
+
+<!-- ════════════════════════════════════
+     GAMES SECTION
+════════════════════════════════════ -->
+<div id="sec-games" class="section">
+  <div class="sec-header">
+    <h2>🎮 Learning Games</h2>
+    <p>Earn XP by playing games. Test your understanding through challenges!</p>
+  </div>
+
+  <!-- QUIZ -->
+  <div style="margin-bottom:40px;">
+    <h3 style="font-size:18px; font-weight:700; margin-bottom:16px;">🧠 Python Quiz Challenge</h3>
+    <div class="quiz-wrap" id="quiz-container"></div>
+  </div>
+
+  <!-- MATCH GAME -->
+  <div style="margin-bottom:40px;">
+    <h3 style="font-size:18px; font-weight:700; margin-bottom:16px;">🔗 Match the Method</h3>
+    <div class="match-game" id="match-game">
+      <p style="font-size:14px; color:var(--text-dim); margin-bottom:4px;">Click a method on the left, then its description on the right to match them.</p>
+      <div class="match-grid">
+        <div id="match-left"></div>
+        <div id="match-right"></div>
+      </div>
+      <p class="match-status" id="match-status">Matches: 0 / 6</p>
+      <button class="match-reset-btn" onclick="initMatchGame()">↺ Restart</button>
+    </div>
+  </div>
+
+  <!-- FILL IN THE BLANK -->
+  <div>
+    <h3 style="font-size:18px; font-weight:700; margin-bottom:16px;">✏️ Fill in the Blank</h3>
+    <div class="fill-game" id="fill-game"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     COMPARE SECTION
+════════════════════════════════════ -->
+<div id="sec-compare" class="section">
+  <div class="sec-header">
+    <h2>⚖️ Lists vs Tuples vs Dictionaries</h2>
+    <p>A side-by-side comparison of Python's three core data structures.</p>
+  </div>
+  <div class="theory-block">
+    <div style="overflow-x:auto;">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th style="color:var(--list-color)">📋 List</th>
+            <th style="color:var(--tuple-color)">🔒 Tuple</th>
+            <th style="color:var(--dict-color)">📚 Dictionary</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Syntax</td><td><code>[1, 2, 3]</code></td><td><code>(1, 2, 3)</code></td><td><code>{"k": v}</code></td></tr>
+          <tr><td>Ordered</td><td>✅ Yes</td><td>✅ Yes</td><td>✅ Yes (Python 3.7+)</td></tr>
+          <tr><td>Mutable</td><td>✅ Yes</td><td>❌ No</td><td>✅ Yes</td></tr>
+          <tr><td>Indexed by</td><td>Integer [0,1,2...]</td><td>Integer [0,1,2...]</td><td>Key (any hashable)</td></tr>
+          <tr><td>Duplicates</td><td>✅ Allowed</td><td>✅ Allowed</td><td>Keys unique; values dup. ok</td></tr>
+          <tr><td>Dict key</td><td>❌ No (unhashable)</td><td>✅ Yes</td><td>N/A</td></tr>
+          <tr><td>Memory</td><td>More</td><td>Less</td><td>Most (hash table)</td></tr>
+          <tr><td>Speed</td><td>Fast</td><td>Fastest</td><td>O(1) lookup</td></tr>
+          <tr><td>Use when</td><td>Collection that changes</td><td>Fixed record/constant</td><td>Key-value lookup</td></tr>
+          <tr><td>Iteration</td><td>for x in list</td><td>for x in tuple</td><td>for k,v in d.items()</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="grid-3" style="margin-top:24px;">
+    <div class="theory-block">
+      <h3 style="color:var(--list-color)">📋 Use a List when…</h3>
+      <ul style="margin-top:10px;">
+        <li>You need to add/remove items</li>
+        <li>Order matters and may change</li>
+        <li>You have a collection of similar items</li>
+        <li>e.g., Shopping cart, task queue, stack</li>
+      </ul>
+    </div>
+    <div class="theory-block">
+      <h3 style="color:var(--tuple-color)">🔒 Use a Tuple when…</h3>
+      <ul style="margin-top:10px;">
+        <li>Data should not change</li>
+        <li>You need a dictionary key</li>
+        <li>Returning multiple values from a function</li>
+        <li>e.g., Coordinates, RGB color, date</li>
+      </ul>
+    </div>
+    <div class="theory-block">
+      <h3 style="color:var(--dict-color)">📚 Use a Dict when…</h3>
+      <ul style="margin-top:10px;">
+        <li>You need fast key-based lookup</li>
+        <li>Data has meaningful labels</li>
+        <li>You're counting or grouping items</li>
+        <li>e.g., Contact book, word frequency, config</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="margin-bottom:8px;">
+    <span style="font-size:22px; font-weight:800; color:var(--text)">ScholarNest</span>
+  </div>
+  <p>Python Data Structures — Interactive Learning Module</p>
+  <p style="margin-top:6px;"><a href="https://scholarnest21.netlify.app" target="_blank">scholarnest21.netlify.app</a></p>
+</footer>
+
+<script>
+// ══════════════════════════════════════
+// XP SYSTEM
+// ══════════════════════════════════════
+let xp = 0;
+function addXP(amount) {
+  xp += amount;
+  document.getElementById('xp-display').textContent = xp;
+}
+
+// ══════════════════════════════════════
+// TAB SYSTEM
+// ══════════════════════════════════════
+function showTab(name, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab, .nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + name).classList.add('active');
+  if (btn) {
+    btn.classList.add('active');
+    // sync both nav-btn and tab
+    document.querySelectorAll('.tab, .nav-btn').forEach(b => {
+      if (b.textContent.trim().replace(/[🎮📋🔒📚⚡⚖️🃏]/g,'').trim().toLowerCase().startsWith(name === 'cards' ? 'flashcard' : name === 'games' ? 'game' : name === 'compare' ? 'compare' : name === 'advanced' ? 'advanced' : name)) {
+        b.classList.add('active');
+      }
+    });
+    btn.classList.add('active');
+  }
+  setTimeout(revealAll, 50);
+}
+
+// ══════════════════════════════════════
+// SCROLL REVEAL
+// ══════════════════════════════════════
+function revealAll() {
+  document.querySelectorAll('.reveal').forEach(el => {
+    el.classList.add('visible');
+  });
+}
+setTimeout(revealAll, 200);
+
+// ══════════════════════════════════════
+// LIST EXPLORER
+// ══════════════════════════════════════
+let currentList = [3,1,4,1,5,9,2,6];
+function loadList() {
+  const inp = document.getElementById('list-input').value;
+  try {
+    currentList = inp.split(',').map(x => {
+      const t = x.trim();
+      return isNaN(t) ? t.replace(/['"]/g,'') : Number(t);
+    });
+    document.getElementById('list-output').textContent = '✅ Loaded: ' + JSON.stringify(currentList);
+    addXP(2);
+  } catch(e) { document.getElementById('list-output').textContent = '❌ Error parsing input'; }
+}
+function listOp(op) {
+  const out = document.getElementById('list-output');
+  const cl = [...currentList];
+  switch(op) {
+    case 'sort':   cl.sort((a,b)=>a>b?1:-1); out.textContent = `sorted: ${JSON.stringify(cl)}`; break;
+    case 'reverse': cl.reverse(); out.textContent = `reversed: ${JSON.stringify(cl)}`; break;
+    case 'len':    out.textContent = `len() = ${cl.length}`; break;
+    case 'min':    out.textContent = `min() = ${Math.min(...cl.filter(x=>typeof x==='number'))}`; break;
+    case 'max':    out.textContent = `max() = ${Math.max(...cl.filter(x=>typeof x==='number'))}`; break;
+    case 'sum':    out.textContent = `sum() = ${cl.filter(x=>typeof x==='number').reduce((a,b)=>a+b,0)}`; break;
+    case 'slice':  out.textContent = `[:3] = ${JSON.stringify(cl.slice(0,3))}`; break;
+    case 'pop':    const popped = cl.pop(); out.textContent = `pop() removed: ${popped}\nList is now: ${JSON.stringify(cl)}`; break;
+  }
+  addXP(1);
+}
+
+// ══════════════════════════════════════
+// COMPREHENSION BUILDER
+// ══════════════════════════════════════
+function runComp() {
+  const exprStr = document.getElementById('comp-expr').value;
+  const rangeVal = parseInt(document.getElementById('comp-range').value);
+  const condStr = document.getElementById('comp-cond').value;
+  let result = [];
+  for (let x = 0; x < rangeVal; x++) {
+    let pass = true;
+    if (condStr === 'if x%2==0') pass = x % 2 === 0;
+    else if (condStr === 'if x%2!=0') pass = x % 2 !== 0;
+    else if (condStr === 'if x>3') pass = x > 3;
+    else if (condStr === 'if x<5') pass = x < 5;
+    if (pass) {
+      if (exprStr === 'x') result.push(x);
+      else if (exprStr === 'x**2') result.push(x**2);
+      else if (exprStr === 'x*2') result.push(x*2);
+      else if (exprStr === 'x+10') result.push(x+10);
+      else if (exprStr === 'str(x)') result.push('"'+x+'"');
+    }
+  }
+  const condDisplay = condStr ? ' ' + condStr : '';
+  document.getElementById('comp-result').textContent =
+    `[${exprStr} for x in range(${rangeVal})${condDisplay}]\n= ${JSON.stringify(result)}`;
+}
+runComp();
+
+// ══════════════════════════════════════
+// FLASHCARDS
+// ══════════════════════════════════════
+const cards = [
+  {q:'What is aliasing in Python lists?', a:'When two variables point to the same list object. Changing one affects the other. Use list[:] or list.copy() to clone instead.', tag:'list'},
+  {q:'How do you clone a list safely?', a:'Use slicing: copy = original[:]  Or: copy = list(original)  Or: copy = original.copy()', tag:'list'},
+  {q:'What is the difference between append() and extend()?', a:'append() adds ONE item (even if it\'s a list). extend() unpacks an iterable and adds each element individually.', tag:'list'},
+  {q:'What does list.pop() do?', a:'Removes and RETURNS the last element (or element at given index). Example: lst.pop() → returns last; lst.pop(0) → returns first.', tag:'list'},
+  {q:'What is a list slice? Give syntax.', a:'A slice extracts part of a list. Syntax: list[start:stop:step]. The stop index is EXCLUSIVE. Example: [1,2,3,4][1:3] → [2,3]', tag:'list'},
+  {q:'Why can\'t you use a list as a dictionary key?', a:'Lists are mutable (can change), so they are not hashable. Dictionary keys must be hashable. Use a tuple instead!', tag:'dict'},
+  {q:'What is tuple unpacking?', a:'Assigning multiple variables at once from a tuple: x, y = (3, 4). Also enables elegant swapping: a, b = b, a', tag:'tuple'},
+  {q:'How is a tuple different from a list?', a:'Tuples are IMMUTABLE (can\'t be modified after creation). They use () instead of []. They are faster and can be dict keys.', tag:'tuple'},
+  {q:'What does dict.get(key, default) do?', a:'Returns the value for key if it exists, otherwise returns default. Unlike dict[key], it does NOT raise a KeyError if key is missing.', tag:'dict'},
+  {q:'What is a list comprehension?', a:'A concise way to create lists: [expression for item in iterable if condition]. Example: [x**2 for x in range(5) if x%2==0] → [0, 4, 16]', tag:'list'},
+  {q:'What do dict.keys(), dict.values(), dict.items() return?', a:'keys() → view of all keys; values() → view of all values; items() → view of (key, value) tuples. All are iterable view objects.', tag:'dict'},
+  {q:'What is the output of [0]*3 in Python?', a:'[0, 0, 0] — the * operator repeats the list. CAREFUL: for nested lists, all elements share the same reference!', tag:'list'},
+];
+
+function initCards() {
+  const container = document.getElementById('cards-container');
+  container.innerHTML = '';
+  cards.forEach((c, i) => {
+    const tagClass = `badge-${c.tag}`;
+    container.innerHTML += `
+      <div class="flashcard-wrap" onclick="flipCard(this, ${i})">
+        <div class="flashcard" id="fc-${i}" style="min-height:200px; position:relative;">
+          <div class="card-front">
+            <div class="card-label badge ${tagClass}" style="margin-bottom:10px;">${c.tag}</div>
+            <div class="card-q">${c.q}</div>
+            <div class="card-hint" style="margin-top:14px;">👆 Click to reveal answer</div>
+          </div>
+          <div class="card-back">
+            <div class="card-label" style="margin-bottom:10px;">ANSWER</div>
+            <div class="card-a" style="font-family:'JetBrains Mono',monospace; font-size:13px;">${c.a}</div>
+          </div>
+        </div>
+      </div>`;
+  });
+}
+function flipCard(wrap, i) {
+  const card = document.getElementById('fc-' + i);
+  const isFlipping = !card.classList.contains('flipped');
+  card.classList.toggle('flipped');
+  if (isFlipping) addXP(3);
+}
+initCards();
+
+// ══════════════════════════════════════
+// QUIZ
+// ══════════════════════════════════════
+const quizData = [
+  {q:'What is the output of this code?', code:'lst = [1, 2, 3]\na = lst\na.append(4)\nprint(lst)', opts:['[1,2,3]','[1,2,3,4]','Error','[4]'], correct:1, explanation:'a is an ALIAS of lst — they point to the same object. Appending to a also changes lst.'},
+  {q:'Which method removes and RETURNS an element?', code:'lst = [10, 20, 30]\nresult = lst._____(1)\nprint(result)', opts:['remove()','del','pop()','discard()'], correct:2, explanation:'pop(index) removes the element at that index and returns it. result would be 20.'},
+  {q:'What does this slice return?', code:'nums = [0, 10, 20, 30, 40]\nprint(nums[::2])', opts:['[10, 30]','[0, 20, 40]','[0, 10, 20]','[40, 20, 0]'], correct:1, explanation:'nums[::2] means start from 0, go to end, step by 2 → picks index 0,2,4 → [0, 20, 40].'},
+  {q:'What is the result of tuple unpacking?', code:'a, b, c = (10, 20, 30)\nprint(b)', opts:['10','30','20','Error'], correct:2, explanation:'Tuple unpacking assigns values left-to-right. a=10, b=20, c=30. So b is 20.'},
+  {q:'What does dict.get("x", 0) return if "x" is NOT in the dict?', code:'d = {"a": 1, "b": 2}\nprint(d.get("x", 0))', opts:['None','KeyError','0','""'], correct:2, explanation:'dict.get(key, default) returns the default value if the key is not found — no error raised.'},
+  {q:'What does this list comprehension produce?', code:'result = [x**2 for x in range(5) if x % 2 == 0]', opts:['[1,4,9,16,25]','[0,4,16]','[0,2,4]','[4,16]'], correct:1, explanation:'Even numbers in range(5) are 0,2,4. Their squares are 0,4,16. → [0, 4, 16]'},
+  {q:'What is the difference between list.sort() and sorted()?', code:'lst = [3, 1, 2]\nx = sorted(lst)\ny = lst.sort()', opts:['No difference','sort() returns new list','sorted() modifies in-place; sort() returns new','sorted() returns new list; sort() returns None'], correct:3, explanation:'sorted() creates and returns a new sorted list (original unchanged). sort() modifies the list in-place and returns None.'},
+  {q:'What does this output?', code:'t = (1, 2, 3)\nprint(t[1:])', opts:['(2,)','[2,3]','(2,3)','2,3'], correct:2, explanation:'Slicing a tuple returns a tuple. t[1:] returns elements from index 1 onward → (2, 3).'},
+];
+
+let qIdx = 0, score = 0, answered = false;
+function renderQuiz() {
+  const c = document.getElementById('quiz-container');
+  if (qIdx >= quizData.length) {
+    const pct = Math.round(score / quizData.length * 100);
+    addXP(score * 10);
+    c.innerHTML = `<div class="quiz-score">
+      <div class="score-num">${score}/${quizData.length}</div>
+      <div class="score-label">Score: ${pct}% — +${score*10} XP earned!</div>
+      <div style="font-size:32px; margin-bottom:16px;">${pct>=80?'🏆':pct>=60?'⭐':'💪'}</div>
+      <button class="quiz-restart" onclick="qIdx=0;score=0;answered=false;renderQuiz()">↺ Play Again</button>
+    </div>`; return;
+  }
+  const q = quizData[qIdx];
+  const opts = q.opts.map((o,i) => `<button class="quiz-opt" id="qo-${i}" onclick="answerQuiz(${i})">${o}</button>`).join('');
+  c.innerHTML = `
+    <div class="quiz-progress">
+      <div class="quiz-prog-bar"><div class="quiz-prog-fill" style="width:${qIdx/quizData.length*100}%"></div></div>
+      <div class="quiz-q-num">${qIdx+1} / ${quizData.length}</div>
+    </div>
+    <div class="quiz-question">${q.q}</div>
+    ${q.code ? `<div class="quiz-code">${q.code.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>` : ''}
+    <div class="quiz-options">${opts}</div>
+    <div class="quiz-feedback" id="qfb"></div>
+    <button class="quiz-next-btn" id="qnext" onclick="nextQ()">Next →</button>`;
+  answered = false;
+}
+function answerQuiz(i) {
+  if (answered) return;
+  answered = true;
+  const q = quizData[qIdx];
+  const fb = document.getElementById('qfb');
+  document.querySelectorAll('.quiz-opt').forEach((b,j) => {
+    b.disabled = true;
+    if (j === q.correct) b.classList.add('correct');
+    else if (j === i && i !== q.correct) b.classList.add('wrong');
+  });
+  if (i === q.correct) { score++; fb.className = 'quiz-feedback show correct-fb'; fb.textContent = '✅ Correct! ' + q.explanation; addXP(5); }
+  else { fb.className = 'quiz-feedback show wrong-fb'; fb.textContent = '❌ Not quite. ' + q.explanation; }
+  document.getElementById('qnext').classList.add('show');
+}
+function nextQ() { qIdx++; renderQuiz(); }
+renderQuiz();
+
+// ══════════════════════════════════════
+// MATCH GAME
+// ══════════════════════════════════════
+const matchPairs = [
+  {method:'append()', desc:'Adds item to end'},
+  {method:'pop()', desc:'Removes & returns item'},
+  {method:'sort()', desc:'Sorts list in-place'},
+  {method:'extend()', desc:'Merges another iterable'},
+  {method:'index()', desc:'Finds position of item'},
+  {method:'reverse()', desc:'Reverses list in-place'},
+];
+let selectedLeft = null, selectedRight = null, matchCount = 0;
+
+function initMatchGame() {
+  matchCount = 0; selectedLeft = null; selectedRight = null;
+  document.getElementById('match-status').textContent = 'Matches: 0 / 6';
+  const methods = [...matchPairs].sort(() => Math.random()-0.5);
+  const descs = [...matchPairs].sort(() => Math.random()-0.5);
+  const lDiv = document.getElementById('match-left');
+  const rDiv = document.getElementById('match-right');
+  lDiv.innerHTML = '<h4>Methods</h4>';
+  rDiv.innerHTML = '<h4>Descriptions</h4>';
+  methods.forEach(p => {
+    const el = document.createElement('div');
+    el.className = 'match-item'; el.textContent = p.method; el.dataset.val = p.method;
+    el.onclick = () => selectMatch(el, 'left');
+    lDiv.appendChild(el);
+  });
+  descs.forEach(p => {
+    const el = document.createElement('div');
+    el.className = 'match-item'; el.textContent = p.desc; el.dataset.val = p.desc;
+    el.onclick = () => selectMatch(el, 'right');
+    rDiv.appendChild(el);
+  });
+}
+function selectMatch(el, side) {
+  if (el.classList.contains('matched')) return;
+  if (side === 'left') {
+    if (selectedLeft) selectedLeft.classList.remove('selected');
+    selectedLeft = el; el.classList.add('selected');
+  } else {
+    if (selectedRight) selectedRight.classList.remove('selected');
+    selectedRight = el; el.classList.add('selected');
+  }
+  if (selectedLeft && selectedRight) {
+    const method = selectedLeft.dataset.val;
+    const pair = matchPairs.find(p => p.method === method);
+    if (pair && pair.desc === selectedRight.dataset.val) {
+      selectedLeft.classList.remove('selected'); selectedLeft.classList.add('matched');
+      selectedRight.classList.remove('selected'); selectedRight.classList.add('matched');
+      matchCount++; addXP(8);
+      document.getElementById('match-status').textContent = `Matches: ${matchCount} / 6 ${matchCount===6?'🎉 Complete!':''}`;
+    } else {
+      [selectedLeft, selectedRight].forEach(e => {
+        e.classList.remove('selected'); e.classList.add('wrong-match');
+        setTimeout(() => e.classList.remove('wrong-match'), 400);
+      });
+    }
+    selectedLeft = null; selectedRight = null;
+  }
+}
+initMatchGame();
+
+// ══════════════════════════════════════
+// FILL IN THE BLANK
+// ══════════════════════════════════════
+const fillQuestions = [
+  {
+    label: 'Q1: Add "grape" to the end of the list',
+    before: 'fruits = ["apple", "banana"]\nfruits.',
+    input: {id:'fq1', ans:'append'},
+    after: '("grape")',
+    hint: 'Use the method that adds ONE item to the END.'
+  },
+  {
+    label: 'Q2: Sort the list in reverse order',
+    before: 'nums = [3, 1, 4, 1, 5]\nnums.sort(reverse=',
+    input: {id:'fq2', ans:'True'},
+    after: ')',
+    hint: 'Pass a boolean keyword argument.'
+  },
+  {
+    label: 'Q3: Get the value safely from a dict',
+    before: 'd = {"name": "Riya"}\nresult = d.',
+    input: {id:'fq3', ans:'get'},
+    after: '("age", 0)',
+    hint: 'This method returns a default if key is missing.'
+  },
+  {
+    label: 'Q4: Unpack the tuple',
+    before: 'point = (3, 4)\n',
+    input: {id:'fq4', ans:'x, y'},
+    after: ' = point',
+    hint: 'Two variables, comma separated.'
+  },
+];
+
+function buildFillGame() {
+  const div = document.getElementById('fill-game');
+  div.innerHTML = '<p style="font-size:13px;color:var(--text-dim);margin-bottom:16px;">Type the correct code in each blank, then check your answers.</p>';
+  fillQuestions.forEach(q => {
+    div.innerHTML += `
+      <div style="margin-bottom:24px;">
+        <div style="font-size:14px;font-weight:600;margin-bottom:10px;">${q.label}</div>
+        <div class="fill-q">
+          ${q.before.replace(/\n/g,'<br>')}<input class="fill-input" id="${q.input.id}" placeholder="???"><span style="color:#C9D4E8">${q.after.replace(/\n/g,'<br>')}</span>
+        </div>
+        <div style="font-size:12px;color:var(--text-dim);margin-bottom:6px;">💡 Hint: ${q.hint}</div>
+      </div>`;
+  });
+  div.innerHTML += `<button class="fill-check-btn" onclick="checkFill()">Check Answers</button>
+    <div class="fill-result" id="fill-result"></div>`;
+}
+function checkFill() {
+  let correct = 0;
+  fillQuestions.forEach(q => {
+    const inp = document.getElementById(q.input.id);
+    const val = inp.value.trim();
+    if (val.toLowerCase() === q.input.ans.toLowerCase()) {
+      inp.classList.remove('wrong'); inp.classList.add('correct'); correct++;
+    } else {
+      inp.classList.remove('correct'); inp.classList.add('wrong');
+    }
+  });
+  const res = document.getElementById('fill-result');
+  if (correct === fillQuestions.length) {
+    res.innerHTML = `<span style="color:var(--mint)">🎉 Perfect! All ${correct}/${fillQuestions.length} correct! +${correct*7} XP</span>`;
+    addXP(correct * 7);
+  } else {
+    res.innerHTML = `<span style="color:var(--amber)">${correct}/${fillQuestions.length} correct. Check the highlighted blanks!</span>`;
+    addXP(correct * 3);
+  }
+}
+buildFillGame();
+</script>
+</body>
+</html>
